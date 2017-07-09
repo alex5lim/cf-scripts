@@ -23,6 +23,7 @@ results_per_page=1
 username="$1"
 output_file="$2"
 json_file=$(mktemp)
+echo "username,org_name,space_name,role" >> ${output_file}
 
 # Find user's guid
 next_url="/v2/users?results-per-page=${results_per_page}"
@@ -48,10 +49,15 @@ if [[ $(jq -r '.entity.organizations[]' ${json_file} | wc -l) -eq 0 ]]; then
   exit
 fi
 
-exit
+# Get user's OrgManager role(s) if any
+if [[ $(jq -r '.entity.managed_organizations[]' ${json_file} | wc -l) -ne 0 ]]; then
+  org_names=$(jq -r '.entity.managed_organizations[] | .entity.name' ${json_file})
+  for org_name in $org_names; do
+    echo "$username,$org_name,,OrgManager" >> ${output_file}
+  done
+fi
 
 # Get user spaces
-echo "username,org_name,space_name,role" >> ${output_file}
 space_guids=$(cat ${json_file} | jq -r '.entity.spaces[] | .metadata.guid')
 for space_guid in $space_guids; do
   org_name=$(cat ${json_file} | jq -r --arg value $space_guid '.entity.organizations[] | select(.entity.spaces[].metadata.guid == $value) | .entity.name')
