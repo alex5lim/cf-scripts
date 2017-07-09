@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -z "$1" -o -z "$2" ]; then
+if [ -z "$1" ] || [ -z "$2" ]; then
   echo " "
   echo "usage: $0 username output_file"
   echo " "
