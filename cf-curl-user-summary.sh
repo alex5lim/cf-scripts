@@ -57,12 +57,50 @@ if [[ $(jq -r '.entity.managed_organizations[]' ${json_file} | wc -l) -ne 0 ]]; 
   done
 fi
 
-# Get user spaces
-space_guids=$(cat ${json_file} | jq -r '.entity.spaces[] | .metadata.guid')
-for space_guid in $space_guids; do
-  org_name=$(cat ${json_file} | jq -r --arg value $space_guid '.entity.organizations[] | select(.entity.spaces[].metadata.guid == $value) | .entity.name')
-  space_name=$(cat ${json_file} | jq -r --arg value $space_guid '.entity.spaces[] | select(.metadata.guid == $value) | .entity.name')
-  echo "$username,$org_name,$space_name,SpaceDeveloper" >> ${output_file}
-done
+# Get user's BillingManager role(s) if any
+if [[ $(jq -r '.entity.billing_managed_organizations[]' ${json_file} | wc -l) -ne 0 ]]; then
+  org_names=$(jq -r '.entity.billing_managed_organizations[] | .entity.name' ${json_file})
+  for org_name in $org_names; do
+    echo "$username,$org_name,,BillingManager" >> ${output_file}
+  done
+fi
+
+# Get user's OrgAuditor role(s) if any
+if [[ $(jq -r '.entity.audited_organizations[]' ${json_file} | wc -l) -ne 0 ]]; then
+  org_names=$(jq -r '.entity.audited_organizations[] | .entity.name' ${json_file})
+  for org_name in $org_names; do
+    echo "$username,$org_name,,OrgAuditor" >> ${output_file}
+  done
+fi
+
+# Get user's SpaceManager role(s) if any
+if [[ $(jq -r '.entity.managed_spaces[]' ${json_file} | wc -l) -ne 0 ]]; then
+  space_guids=$(jq -r '.entity.managed_spaces[] | .metadata.guid' ${json_file})
+  for space_guid in $space_guids; do
+    org_name=$(jq -r --arg value $space_guid '.entity.organizations[] | select(.entity.spaces[].metadata.guid == $value) | .entity.name' ${json_file})
+    space_name=$(jq -r --arg value $space_guid '.entity.spaces[] | select(.metadata.guid == $value) | .entity.name' ${json_file})
+    echo "$username,$org_name,$space_name,SpaceManager" >> ${output_file}
+  done
+fi
+
+# Get user's SpaceDeveloper role(s) if any
+if [[ $(jq -r '.entity.spaces[]' ${json_file} | wc -l) -ne 0 ]]; then
+  space_guids=$(jq -r '.entity.spaces[] | .metadata.guid' ${json_file})
+  for space_guid in $space_guids; do
+    org_name=$(jq -r --arg value $space_guid '.entity.organizations[] | select(.entity.spaces[].metadata.guid == $value) | .entity.name' ${json_file})
+    space_name=$(jq -r --arg value $space_guid '.entity.spaces[] | select(.metadata.guid == $value) | .entity.name' ${json_file})
+    echo "$username,$org_name,$space_name,SpaceDeveloper" >> ${output_file}
+  done
+fi
+
+# Get user's SpaceAuditor role(s) if any
+if [[ $(jq -r '.entity.audited_spaces[]' ${json_file} | wc -l) -ne 0 ]]; then
+  space_guids=$(jq -r '.entity.audited_spaces[] | .metadata.guid' ${json_file})
+  for space_guid in $space_guids; do
+    org_name=$(jq -r --arg value $space_guid '.entity.organizations[] | select(.entity.spaces[].metadata.guid == $value) | .entity.name' ${json_file})
+    space_name=$(jq -r --arg value $space_guid '.entity.spaces[] | select(.metadata.guid == $value) | .entity.name' ${json_file})
+    echo "$username,$org_name,$space_name,SpaceAuditor" >> ${output_file}
+  done
+fi
 
 rm ${json_file}
