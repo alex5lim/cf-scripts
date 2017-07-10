@@ -78,7 +78,7 @@ if [[ $(jq -r '.entity.managed_spaces[]' ${json_file} | wc -l) -ne 0 ]]; then
   space_guids=$(jq -r '.entity.managed_spaces[] | .metadata.guid' ${json_file})
   for space_guid in $space_guids; do
     org_name=$(jq -r --arg value $space_guid '.entity.organizations[] | select(.entity.spaces[].metadata.guid == $value) | .entity.name' ${json_file})
-    space_name=$(jq -r --arg value $space_guid '.entity.spaces[] | select(.metadata.guid == $value) | .entity.name' ${json_file})
+    space_name=$(jq -r --arg value $space_guid '.entity.managed_spaces[] | select(.metadata.guid == $value) | .entity.name' ${json_file})
     echo "$username,$org_name,$space_name,SpaceManager" >> ${output_file}
   done
 fi
@@ -98,7 +98,7 @@ if [[ $(jq -r '.entity.audited_spaces[]' ${json_file} | wc -l) -ne 0 ]]; then
   space_guids=$(jq -r '.entity.audited_spaces[] | .metadata.guid' ${json_file})
   for space_guid in $space_guids; do
     org_name=$(jq -r --arg value $space_guid '.entity.organizations[] | select(.entity.spaces[].metadata.guid == $value) | .entity.name' ${json_file})
-    space_name=$(jq -r --arg value $space_guid '.entity.spaces[] | select(.metadata.guid == $value) | .entity.name' ${json_file})
+    space_name=$(jq -r --arg value $space_guid '.entity.audited_spaces[] | select(.metadata.guid == $value) | .entity.name' ${json_file})
     echo "$username,$org_name,$space_name,SpaceAuditor" >> ${output_file}
   done
 fi
