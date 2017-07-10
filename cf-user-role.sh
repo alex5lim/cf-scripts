@@ -36,6 +36,13 @@ while [[ "${next_url}" != "null" ]]; do
   next_url=$(cf curl ${next_url} | jq -r -c ".next_url")
 done
 
+# Check if the user exists
+if [[ $guid == "" ]]; then
+  echo "User $username doesn't exist."
+  rm ${json_file}
+  exit
+fi
+
 # Store user summary
 next_url="/v2/users/$guid/summary?results-per-page=${results_per_page}"
 while [[ "${next_url}" != "null" ]]; do
@@ -46,6 +53,7 @@ done
 # Check if the user belong to any org
 if [[ $(jq -r '.entity.organizations[]' ${json_file} | wc -l) -eq 0 ]]; then
   echo "User doesn't belong to any org."
+  rm ${json_file}
   exit
 fi
 
@@ -104,3 +112,4 @@ if [[ $(jq -r '.entity.audited_spaces[]' ${json_file} | wc -l) -ne 0 ]]; then
 fi
 
 rm ${json_file}
+exit
