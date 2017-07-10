@@ -37,7 +37,7 @@ while [[ "${next_url}" != "null" ]]; do
 done
 
 # Check if the user exists
-if [[ $guid == "" ]]; then
+if [[ -z $guid ]]; then
   echo "User $username doesn't exist."
   rm ${json_file}
   exit
