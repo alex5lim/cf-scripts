@@ -1,0 +1,15 @@
+username,org_name,space_name,role,task
+alexanderlimha,hello,,OrgManager,unset
+alexanderlimha,world,,OrgManager,unset
+alexanderlimha,hello,,BillingManager,unset
+alexanderlimha,hello,,OrgAuditor,unset
+alexanderlimha,hello,dev,SpaceManager,unset
+alexanderlimha,hello,dev,SpaceDeveloper,set
+alexanderlimha,hello,test,SpaceDeveloper,set
+alexanderlimha,hello,uat,SpaceDeveloper,set
+alexanderlimha,hello,prod,SpaceDeveloper,set
+alexanderlimha,hello,dev,SpaceAuditor,unset
+alexanderlimha,world,dev,SpaceDeveloper,set
+alexanderlimha,world,test,SpaceDeveloper,set
+alexanderlimha,world,uat,SpaceDeveloper,set
+alexanderlimha,world,prod,SpaceDeveloper,set
