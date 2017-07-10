@@ -23,7 +23,7 @@ export CF_COLOR=false
 start_line=2
 input_file="$1"
 
-while ifs="," read -r username org_name space_name role task; do
+while IFS="," read -r username org_name space_name role task; do
   echo "user:$username org:$org_name space:$space_name role:$role task:$task"
   if [[ $role == 'OrgManager' ]] || [[ $role == 'BillingManager' ]] || [[ $role == 'OrgAuditor' ]]; then
     if [[ $task == 'set' ]]; then
