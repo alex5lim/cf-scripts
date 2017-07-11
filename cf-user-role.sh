@@ -52,7 +52,7 @@ done
 
 # Check if the user belong to any org
 if [[ $(jq -r '.entity.organizations[]' ${json_file} | wc -l) -eq 0 ]]; then
-  echo "User doesn't belong to any org."
+  echo "User $username doesn't belong to any org."
   rm ${json_file}
   exit
 fi
