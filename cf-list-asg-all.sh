@@ -20,9 +20,10 @@ if [[ "$(which jq)x" == "x" ]]; then
 fi
 
 output_file="$1"
+results_per_page=100
 
 # Capture the output of security_groups
-next_url="/v2/security_groups"
+next_url="/v2/security_groups?results-per-page=${results_per_page}"
 while [[ "${next_url}" != "null" ]]; do
   cf curl ${next_url} >> ${output_file}
   next_url=$(cf curl ${next_url} | jq -r -c ".next_url")
