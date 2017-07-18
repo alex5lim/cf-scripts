@@ -22,7 +22,7 @@ fi
 output_file="$1"
 results_per_page=100
 json_file=$(mktemp)
-echo "asg_name,running_default,staging_default,protocol,ports,destination,description" >> ${output_file}
+echo "asg_name;running_default;staging_default;protocol;ports;destination;description" >> ${output_file}
 
 # Capture the output of security_groups
 next_url="/v2/security_groups?results-per-page=${results_per_page}"
